@@ -159,13 +159,23 @@ class Ruleset
      * @param bool   $condition
      * @return $this
      */
-    public function removeRuleWhen(string $name, bool $condition): self
+    public function removeRuleIf(string $name, bool $condition): self
     {
         if ($condition) {
             return $this->removeRule($name);
         }
 
         return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param bool   $condition
+     * @return $this
+     */
+    public function removeRuleUnless(string $name, bool $condition): self
+    {
+        return $this->removeRuleIf($name, !$condition);
     }
 
     /**
@@ -188,10 +198,14 @@ class Ruleset
      */
     protected function handleRemoveOperations(string $method, array $parameters): self
     {
-        $rule = Str::snake(str_replace(['remove', 'When'], '', $method));
+        $rule = Str::snake(str_replace(['remove', 'If', 'Unless'], '', $method));
 
-        if (Str::endsWith($method, 'When')) {
-            return $this->removeRuleWhen($rule, $parameters[0]);
+        if (Str::endsWith($method, 'If')) {
+            return $this->removeRuleIf($rule, $parameters[0]);
+        }
+
+        if (Str::endsWith($method, 'Unless')) {
+            return $this->removeRuleUnless($rule, $parameters[0]);
         }
 
         return $this->removeRule($rule);

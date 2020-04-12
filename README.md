@@ -133,12 +133,13 @@ return [
 ];
 ```
 
-Or only remove for a given condition:
+Or only keep or remove for a given condition:
 
 ```php
 return [
     'attributes' => [
-        'password' => r()->sometimes()->removeRuleWhen('sometimes', $condition === true),
+        'password_1' => r()->sometimes()->removeRuleIf('sometimes', $condition === true),
+        'password_2' => r()->sometimes()->removeRuleUnless('sometimes', $condition === true),
     ],
 ];
 ```
@@ -149,7 +150,8 @@ The above could also be written like so, using some black voodoo magic:
 return [
     'attributes' => [
         'password_1' => r()->sometimes()->removeSometimes(),
-        'password_2' => r()->sometimes()->removeSometimesWhen($condition === true),
+        'password_2' => r()->sometimes()->removeSometimesIf($condition === true),
+        'password_3' => r()->sometimes()->removeSometimesUnless($condition === true),
     ],
 ];
 ```
