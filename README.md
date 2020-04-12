@@ -8,6 +8,8 @@ Opinionated validation abstraction for a [Laravel](https://laravel.com/) [JSON:A
 
 ## ToDo
 
+support validation http
+
 - Extract tests from original package
 - Add tests for some of the more obscure validation rules
 - Publish to Packagist

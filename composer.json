@@ -16,11 +16,16 @@
         }
     ],
     "require": {
-        "php": "^7.4"
+        "php": "^7.4",
+        "illuminate/database": "^7.0",
+        "illuminate/http": "^7.0",
+        "illuminate/pipeline": "^7.0",
+        "illuminate/support": "^7.0",
+        "illuminate/validation": "^7.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
-        "symfony/var-dumper": "^4.3",
+        "symfony/var-dumper": "^5.0",
         "orchestra/testbench": "^5.0",
         "phpunit/phpunit": "^9.0"
     },
