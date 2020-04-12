@@ -110,7 +110,7 @@ return [
 ];
 ```
 
-There are times when you want to conditionally remove or keep all rules for a given attribute. Harness solves this issue like so:
+There are times when you only want to add rules for a given attribute based on a condition. Harness solves this issue like so:
 
 ```php
 return [
@@ -123,7 +123,7 @@ return [
 
 ### Removing rules
 
-So a Harness request can be reused for various operations, like POST or PUT, Harness allows you to remove single rules, like so: 
+To make a request reusable for various operations, like POST or PUT, Harness allows you to remove single rules, like so: 
 
 ```php
 return [
@@ -133,7 +133,7 @@ return [
 ];
 ```
 
-Or only keep or remove for a given condition:
+Or only remove them for a given condition:
 
 ```php
 return [
