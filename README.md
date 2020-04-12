@@ -6,9 +6,16 @@
 
 Opinionated validation abstraction for a [Laravel](https://laravel.com/) [JSON:API](https://jsonapi.org/) that hopefully doesn't get in the way
 
+## ToDo
+
+- Extract tests from original package
+- Add tests for some of the more obscure validation rules
+- Publish to Packagist
+- Live happily ever after
+
 ## Installation
 
-You can install the package via composer:
+You can install the package via composer (:bangbang: at least once it has been published to Packagist...):
 
 ```bash
 composer require shabushabu/harness
@@ -164,6 +171,10 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 ## Security
 
 If you discover any security related issues, please email boris@shabushabu.eu instead of using the issue tracker.
+
+## :bangbang: Caveats
+
+Harness is still young and while it is tested, there will probs be bugs. I will try to iron them out as I find them, but until there's a v1 release, expect things to go :boom:.
 
 ## Credits
 
