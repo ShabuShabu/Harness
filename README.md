@@ -1,6 +1,10 @@
-# Abseil
+<p align="center">
+    <img alt="" src="https://github.com/boris-glumpler/Harness/blob/develop/harness.png"/>
+</p>
 
-Opinionated validation abstraction for Laravel that doesn't get in the way
+<h1 align="center">Harness</h1>
+
+Opinionated validation abstraction for Laravel that hopefully doesn't get in the way
 
 ## Installation
 
@@ -35,8 +39,8 @@ If you discover any security related issues, please email boris@shabushabu.eu in
 
 ## Credits
 
-- [Boris Glumpler](https://github.com/shabushabu)
 - [All Contributors](../../contributors)
+- [Ivan Boyko](https://www.iconfinder.com/visualpharm) for the harness icon
 
 ## License
 
