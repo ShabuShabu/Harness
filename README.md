@@ -8,8 +8,6 @@ Opinionated validation abstraction for a [Laravel](https://laravel.com/) [JSON:A
 
 ## ToDo
 
-support validation http
-
 - Extract tests from original package
 - Add tests for some of the more obscure validation rules
 - Publish to Packagist
@@ -19,9 +17,22 @@ support validation http
 
 You can install the package via composer (:bangbang: at least once it has been published to Packagist...):
 
-```bash
-composer require shabushabu/harness
 ```
+$ composer require shabushabu/harness
+```
+
+### Class Constants
+
+The Harness request expects a class constant, `ROUTE_PARAM`, to be present on your models. It's what allows Harness to handle the authorization for you.
+
+```php
+class Page extends Model
+{
+    public const ROUTE_PARAM = 'page';
+}
+```
+
+[ShabuShabu Abseil](https://github.com/ShabuShabu/Abseil) actually uses that same class constant and is a great match for Harness, so do look into it!
 
 ## Usage
 
@@ -160,8 +171,10 @@ return [
 
 ## Testing
 
-```bash
-composer test
+Harness has been extracted from a [personal project](https://boris.travelled.today). It is fully unit tested, but the tests are still intermingled with original project tests and will make their way into this repository in due course. 
+
+```
+$ composer test
 ```
 
 ## Changelog
