@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ShabuShabu;
+namespace ShabuShabu\Harness;
 
 use Illuminate\Support\Str;
-use ShabuShabu\Harness\Ruleset;
 
 /**
  * @param mixed ...$rules

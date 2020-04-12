@@ -9,7 +9,7 @@ Opinionated validation abstraction for a [Laravel](https://laravel.com/) [JSON:A
 ## ToDo
 
 - Extract tests from original package
-- Add tests for some of the more obscure validation rules
+- Add more tests
 - Publish to Packagist
 - Live happily ever after
 
@@ -43,7 +43,7 @@ We can then write our form requests like so:
 namespace App\Http\Requests;
 
 use ShabuShabu\Harness\Request;
-use function ShabuShabu\r;
+use function ShabuShabu\Harness\r;
 
 class PageRequest extends Request
 {
@@ -99,9 +99,20 @@ Both `ruleset` and `feedback` should return nested arrays and will automatically
 
 Harness ships with all the [validation methods](https://laravel.com/docs/7.x/validation#available-validation-rules) you're used to.
 Just camel-case the rule name, use it as a method and hand it any parameters.
-Additionally, Harness also adds `latitude` and `longitude` rules. 
+Additionally, Harness also adds `latitude` and `longitude` rules.
 
 ### Adding rules
+
+In addition to the fluent methods used so far you can also add rules by passing them to the `r` function:
+
+```php
+return [
+    'attributes' => [
+        'title' => r('required', 'string', 'uuid'),
+    ],
+];
+```
+
 
 If you have any rules that are not covered by Laravel, then you can still add them via the `push` method:
 
