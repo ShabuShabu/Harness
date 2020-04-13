@@ -4,6 +4,12 @@
 
 <h1 align="center">Harness</h1>
 
+<p align="center">
+    <a href="https://github.com/ShabuShabu/Harness/actions?query=workflow%3A%22Run+PHPUnit+tests%22">
+        <img alt="PHPUnit Tests" src="https://github.com/ShabuShabu/Harness/workflows/Run%20PHPUnit%20tests/badge.svg"/>
+    </a>
+</p>
+
 Opinionated validation abstraction for a [Laravel](https://laravel.com/) [JSON:API](https://jsonapi.org/) that hopefully doesn't get in the way
 
 ## ToDo
