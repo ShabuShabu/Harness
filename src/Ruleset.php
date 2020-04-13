@@ -98,7 +98,7 @@ class Ruleset
      */
     public function when(bool $condition): self
     {
-        if (!$condition) {
+        if (! $condition) {
             $this->items = new MissingValue;
         }
 
@@ -111,7 +111,7 @@ class Ruleset
      */
     public function unless(bool $condition): self
     {
-        return $this->when(!$condition);
+        return $this->when(! $condition);
     }
 
     /**
@@ -121,7 +121,7 @@ class Ruleset
      */
     public function push($rule, bool $condition = true): self
     {
-        if ($condition && !$this->items instanceof MissingValue) {
+        if ($condition && ! $this->items instanceof MissingValue) {
             $this->items[] = $rule;
         }
 
@@ -175,7 +175,7 @@ class Ruleset
      */
     public function removeRuleUnless(string $name, bool $condition): self
     {
-        return $this->removeRuleIf($name, !$condition);
+        return $this->removeRuleIf($name, ! $condition);
     }
 
     /**
@@ -186,7 +186,7 @@ class Ruleset
      */
     public function removeRule(string $name): self
     {
-        $this->items = array_filter($this->items, fn($item) => $item !== $name);
+        $this->items = array_filter($this->items, fn ($item) => $item !== $name);
 
         return $this;
     }
@@ -228,10 +228,10 @@ class Ruleset
             return $this->handleRemoveOperations($rule, $parameters);
         }
 
-        $rule = Str::snake($rule);
+        $rule  = Str::snake($rule);
         $count = count($parameters);
 
-        if ($count === 1 && !is_array($parameters[0])) {
+        if ($count === 1 && ! is_array($parameters[0])) {
             $rule .= ':' . $parameters[0];
         }
 
