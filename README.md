@@ -23,16 +23,17 @@ $ composer require shabushabu/harness
 
 ### Class Constants
 
-The Harness request expects a class constant, `ROUTE_PARAM`, to be present on your models. It's what allows Harness to handle the authorization for you.
+The Harness request expects two class constants, `ROUTE_PARAM` and `JSON_TYPE`, to be present on your models. It's what allows Harness to automatically handle the form request authorization as well as packaging the request data into proper JSON:API format.
 
 ```php
 class Page extends Model
 {
+    public const JSON_TYPE = 'pages';
     public const ROUTE_PARAM = 'page';
 }
 ```
 
-[ShabuShabu Abseil](https://github.com/ShabuShabu/Abseil) actually uses that same class constant and is a great match for Harness, so do look into it!
+[ShabuShabu Abseil](https://github.com/ShabuShabu/Abseil) actually uses those same class constants and is a great match for Harness, so do look into it!
 
 ## Usage
 

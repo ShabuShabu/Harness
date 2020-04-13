@@ -5,6 +5,7 @@ namespace ShabuShabu\Harness;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Pipeline\Pipeline;
+use InvalidArgumentException;
 use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     AddGlobalRules,
     PrefixWithData,
@@ -42,7 +43,7 @@ abstract class Request extends FormRequest
      */
     public function authorize(): bool
     {
-        if (!$this->user()) {
+        if (! $this->user()) {
             return false;
         }
 
@@ -58,7 +59,14 @@ abstract class Request extends FormRequest
      */
     protected function routeModel()
     {
-        return $this->route($this->modelClass()::ROUTE_PARAM);
+        $model = $this->modelClass();
+        $routeParam = $model . '::ROUTE_PARAM';
+
+        if (! defined($routeParam)) {
+            throw new InvalidArgumentException("The ROUTE_PARAM constant was not set on [$model]");
+        }
+
+        return $this->route(constant($routeParam));
     }
 
     /**
@@ -108,7 +116,7 @@ abstract class Request extends FormRequest
         return (new Pipeline($this->container))
             ->send(new Items($this, $items))
             ->through($pipes)
-            ->then(fn(Items $items) => $items->all());
+            ->then(fn (Items $items) => $items->all());
     }
 
     /**

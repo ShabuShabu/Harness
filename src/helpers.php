@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ShabuShabu\Harness;
 
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 /**
  * @param mixed ...$rules
@@ -31,3 +32,20 @@ function to_snake_case(array $data): array
     return $out;
 }
 
+/**
+ * Retrieve the json type from the model
+ *
+ * @param \ShabuShabu\Harness\Items $items
+ * @return string
+ */
+function json_type(Items $items): string
+{
+    $model = $items->request()->modelClass();
+    $jsonType = $model .'::JSON_TYPE';
+
+    if (! defined($jsonType)) {
+        throw new InvalidArgumentException("The JSON_TYPE constant was not set on [$model]");
+    }
+
+    return constant($jsonType);
+}

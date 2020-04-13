@@ -13,6 +13,6 @@ class ValidateLongitude
      */
     public function validate($a, $value): bool
     {
-        return !preg_match('/' . self::REGEX . '/', $value) ? false : true;
+        return ! preg_match('/' . self::REGEX . '/', $value) ? false : true;
     }
 }

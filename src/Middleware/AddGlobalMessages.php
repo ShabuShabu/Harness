@@ -4,6 +4,7 @@ namespace ShabuShabu\Harness\Middleware;
 
 use Closure;
 use ShabuShabu\Harness\Items;
+use function ShabuShabu\Harness\json_type;
 
 class AddGlobalMessages
 {
@@ -16,13 +17,18 @@ class AddGlobalMessages
      */
     public function handle(Items $messages, Closure $next)
     {
-        $type = $messages->request()->modelClass()::JSON_TYPE;
-
-        return $next($messages->merge([
+        $feedback = [
             'id.required'   => 'An ID is required',
-            'id.uuid4'      => 'The ID must be a valid UUID',
             'type.required' => 'The type is required',
-            'type.in'       => 'The type must be ' . $type,
-        ]));
+            'type.in'       => 'The type must be ' . json_type($messages),
+        ];
+
+        if (config('harness.use_uuids')) {
+            $feedback['id.uuid'] = 'The ID must be a valid UUID';
+        } else {
+            $feedback['id.integer'] = 'The ID must be a valid integer';
+        }
+
+        return $next($messages->merge($feedback));
     }
 }
