@@ -11,7 +11,6 @@ Opinionated validation abstraction for a [Laravel](https://laravel.com/) [JSON:A
 - Extract tests from original package
 - Add more tests
 - Publish to Packagist
-- Add Github actions for CS fixer and Phpunit
 - Live happily ever after
 
 ## Installation
