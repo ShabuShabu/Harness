@@ -15,8 +15,18 @@ trait RequestTrait
      */
     protected function request(string $method = 'POST'): Request
     {
+        $params = [
+            'data' => [
+                'attributes' => [
+                    'title'       => 'Pretty!',
+                    'content'     => 'blabla',
+                    'publishedAt' => '2020-03-05 20:34:45',
+                ],
+            ],
+        ];
+
         return PageRequest::createFromBase(
-            BaseRequest::create('', $method, [], [], [], [], null)
+            BaseRequest::create('', $method, $params, [], [], [], null)
         );
     }
 }

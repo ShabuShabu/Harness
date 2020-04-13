@@ -151,7 +151,6 @@ class MiddlewareTest extends TestCase
 
     /**
      * @test
-     * @group fail
      */
     public function ensure_that_items_get_prepared_for_patching(): void
     {
