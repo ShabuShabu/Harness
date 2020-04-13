@@ -68,7 +68,7 @@ class Items implements ArrayAccess
      */
     public function offsetGet($key)
     {
-        return $this->items[$key];
+        return $this->items[$key] ?? null;
     }
 
     /**

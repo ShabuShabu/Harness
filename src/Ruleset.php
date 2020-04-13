@@ -143,15 +143,15 @@ class Ruleset
      * @param string $except
      * @return $this
      */
-    public function unique(string $table, string $column, bool $condition, string $except = ''): self
+    public function unique(string $table, string $column, bool $condition = true, string $except = ''): self
     {
         $rule = Rule::unique($table, $column);
 
         if ($except) {
-            $rule = $rule->ignore($except, $column);
+            $rule = $rule->ignore($except);
         }
 
-        return $this->push($rule, $condition);
+        return $this->push((string)$rule, $condition);
     }
 
     /**

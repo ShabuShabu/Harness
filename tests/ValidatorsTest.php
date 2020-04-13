@@ -2,7 +2,7 @@
 
 namespace ShabuShabu\Harness\Tests;
 
-use Orchestra\Testbench\TestCase;
+use PHPUnit\Framework\TestCase;
 use ShabuShabu\Harness\Validators\{ValidateLatitude, ValidateLongitude};
 
 class ValidatorsTest extends TestCase

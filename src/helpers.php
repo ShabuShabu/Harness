@@ -40,8 +40,9 @@ function to_snake_case(array $data): array
  */
 function json_type(Items $items): string
 {
-    $model    = $items->request()->modelClass();
-    $jsonType = $model .'::JSON_TYPE';
+    $model = $items->request()->guessModel();
+
+    $jsonType = $model . '::JSON_TYPE';
 
     if (! defined($jsonType)) {
         throw new InvalidArgumentException("The JSON_TYPE constant was not set on [$model]");

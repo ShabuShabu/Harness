@@ -21,7 +21,7 @@ class RulesetTest extends TestCase
     /**
      * @test
      */
-    public function ensure_that_a_rules_can_be_set_fluently(): void
+    public function ensure_that_rules_can_be_set_fluently(): void
     {
         $ruleset = r()->required()->string();
 
@@ -36,6 +36,25 @@ class RulesetTest extends TestCase
         $ruleset = r()->when(false)->required()->string();
 
         $this->assertInstanceOf(MissingValue::class, $ruleset->all());
+
+        $ruleset = r()->unless(true)->required()->string();
+
+        $this->assertInstanceOf(MissingValue::class, $ruleset->all());
+    }
+
+
+    /**
+     * @test
+     */
+    public function ensure_that_a_unique_rule_can_be_added(): void
+    {
+        $ruleset = r()->unique('pages', 'title');
+
+        $this->assertEquals('unique:pages,title,NULL,id', $ruleset->all()[0]);
+
+        $ruleset = r()->unique('pages', 'title', true, 'this');
+
+        $this->assertEquals('unique:pages,title,"this",id', $ruleset->all()[0]);
     }
 
     /**
@@ -69,14 +88,68 @@ class RulesetTest extends TestCase
     /**
      * @test
      */
-    public function ensure_that_the_sometimes_rule_can_be_removed(): void
+    public function ensure_that_a_rule_is_removed(): void
     {
-        $ruleset = r()->sometimes()->string();
+        $ruleset = r()->sometimes();
 
         $this->assertContains('sometimes', $ruleset->all());
 
-        $ruleset = $ruleset->removeSometimesIf(true);
+        $ruleset = $ruleset->removeRuleIf('sometimes', true);
 
         $this->assertNotContains('sometimes', $ruleset->all());
+
+        $ruleset = r()->sometimes()->removeRuleUnless('sometimes', false);
+
+        $this->assertNotContains('sometimes', $ruleset->all());
+    }
+
+    /**
+     * @test
+     */
+    public function ensure_that_a_rule_is_not_removed(): void
+    {
+        $ruleset = r()->sometimes()->removeRuleIf('sometimes', false);
+
+        $this->assertContains('sometimes', $ruleset->all());
+
+        $ruleset = r()->sometimes()->removeRuleUnless('sometimes', true);
+
+        $this->assertContains('sometimes', $ruleset->all());
+    }
+
+    /**
+     * @test
+     */
+    public function ensure_that_a_rule_can_be_removed_dynamically(): void
+    {
+        $ruleset = r()->sometimes()->removeSometimesIf(true);
+
+        $this->assertNotContains('sometimes', $ruleset->all());
+
+        $ruleset = r()->sometimes()->removeSometimesUnless(false);
+
+        $this->assertNotContains('sometimes', $ruleset->all());
+
+        $ruleset = r()->sometimes()->removeSometimes();
+
+        $this->assertNotContains('sometimes', $ruleset->all());
+    }
+
+    /**
+     * @test
+     */
+    public function ensure_that_a_rule_is_built_properly(): void
+    {
+        $ruleset = r()->after('another');
+
+        $this->assertSame('after:another', $ruleset->all()[0]);
+
+        $ruleset = r()->endsWith(['one', 'two']);
+
+        $this->assertSame('ends_with:one,two', $ruleset->all()[0]);
+
+        $ruleset = r()->startsWith('one', 'two');
+
+        $this->assertSame('starts_with:one,two', $ruleset->all()[0]);
     }
 }
