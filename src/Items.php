@@ -14,7 +14,7 @@ class Items implements ArrayAccess
     public function __construct(Request $request, array $items)
     {
         $this->request = $request;
-        $this->items = Arr::dot($items);
+        $this->items   = Arr::dot($items);
     }
 
     /**
