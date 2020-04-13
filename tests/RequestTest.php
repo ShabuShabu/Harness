@@ -129,13 +129,4 @@ class RequestTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
-
-    /**
-     * @test
-     * @group fail
-     */
-    public function ensure_that_the_request_authorises_a_request_properly(): void
-    {
-        $this->assertTrue(true);
-    }
 }
