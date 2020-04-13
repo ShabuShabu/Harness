@@ -40,7 +40,7 @@ function to_snake_case(array $data): array
  */
 function json_type(Items $items): string
 {
-    $model = $items->request()->modelClass();
+    $model    = $items->request()->modelClass();
     $jsonType = $model .'::JSON_TYPE';
 
     if (! defined($jsonType)) {

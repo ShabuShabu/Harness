@@ -59,7 +59,7 @@ abstract class Request extends FormRequest
      */
     protected function routeModel()
     {
-        $model = $this->modelClass();
+        $model      = $this->modelClass();
         $routeParam = $model . '::ROUTE_PARAM';
 
         if (! defined($routeParam)) {

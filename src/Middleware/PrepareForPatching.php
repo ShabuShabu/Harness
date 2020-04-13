@@ -17,13 +17,13 @@ class PrepareForPatching
      */
     public function handle(Items $rules, Closure $next)
     {
-        if (!$rules->request()->patching()) {
+        if (! $rules->request()->patching()) {
             return $next($rules);
         }
 
         return $next($rules->set(
             array_map(
-                fn(array $items) => $this->swapRequiredForNullable($items),
+                fn (array $items) => $this->swapRequiredForNullable($items),
                 $rules->all()
             )
         ));
@@ -36,7 +36,7 @@ class PrepareForPatching
     protected function swapRequiredForNullable(array $items): array
     {
         $items = array_map(
-            fn(string $rule) => $rule === 'required' ? 'nullable' : $rule,
+            fn (string $rule) => $rule === 'required' ? 'nullable' : $rule,
             $items
         );
 
