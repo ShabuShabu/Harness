@@ -36,7 +36,7 @@ class RemoveMissingValues
             }
 
             if (is_array($rule)) {
-                $this->replace($rule);
+                $rules[$key] = $this->replace($rule);
             }
         }
 

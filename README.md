@@ -183,8 +183,6 @@ return [
 
 ## Testing
 
-Harness has been extracted from a [personal project](https://boris.travelled.today). It is fully unit tested, but the tests are still intermingled with original project tests and will make their way into this repository in due course. 
-
 ```
 $ composer test
 ```

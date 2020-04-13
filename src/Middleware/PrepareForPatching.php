@@ -22,10 +22,7 @@ class PrepareForPatching
         }
 
         return $next($rules->set(
-            array_map(
-                fn (array $items) => $this->swapRequiredForNullable($items),
-                $rules->all()
-            )
+            array_map(fn (array $items) => $this->swapRequiredForNullable($items), $rules->all())
         ));
     }
 
