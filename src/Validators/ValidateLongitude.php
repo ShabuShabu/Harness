@@ -13,6 +13,10 @@ class ValidateLongitude
      */
     public function validate($a, $value): bool
     {
+        if ($value > 180 || $value < -180) {
+            return false;
+        }
+
         return ! preg_match('/' . self::REGEX . '/', $value) ? false : true;
     }
 }

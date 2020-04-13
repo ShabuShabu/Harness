@@ -13,6 +13,10 @@ class ValidateLatitude
      */
     public function validate($a, $value): bool
     {
+        if ($value > 90 || $value < -90) {
+            return false;
+        }
+
         return ! preg_match('/' . self::REGEX . '/', $value) ? false : true;
     }
 }
