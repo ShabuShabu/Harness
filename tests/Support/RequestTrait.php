@@ -3,7 +3,6 @@
 
 namespace ShabuShabu\Harness\Tests\Support;
 
-
 use ShabuShabu\Harness\Request;
 use Symfony\Component\HttpFoundation\Request as BaseRequest;
 

@@ -2,8 +2,8 @@
 
 namespace ShabuShabu\Harness\Tests\Support;
 
-use ShabuShabu\Harness\Request;
 use function ShabuShabu\Harness\r;
+use ShabuShabu\Harness\Request;
 
 class PageRequest extends Request
 {

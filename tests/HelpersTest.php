@@ -7,8 +7,8 @@ use Orchestra\Testbench\TestCase;
 use ShabuShabu\Harness\Items;
 use ShabuShabu\Harness\Request;
 use ShabuShabu\Harness\Tests\Support\RequestTrait;
-use Symfony\Component\HttpFoundation\Request as BaseRequest;
 use function ShabuShabu\Harness\{json_type, to_snake_case};
+use Symfony\Component\HttpFoundation\Request as BaseRequest;
 
 class HelpersTest extends TestCase
 {
