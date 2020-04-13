@@ -55,6 +55,9 @@
             "providers": [
                 "ShabuShabu\\Harness\\HarnessServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-develop": "1.0.x-dev"
         }
     },
     "minimum-stability": "dev",
