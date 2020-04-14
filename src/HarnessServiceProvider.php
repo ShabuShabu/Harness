@@ -3,6 +3,8 @@
 namespace ShabuShabu\Harness;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Factory;
+use ShabuShabu\Harness\Validators\{ValidateLatitude, ValidateLongitude};
 
 class HarnessServiceProvider extends ServiceProvider
 {
@@ -13,9 +15,12 @@ class HarnessServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/config.php' => config_path('harness.php'),
+                __DIR__ . '/../config/harness.php' => config_path('harness.php'),
             ], 'config');
         }
+
+        $this->validator()->extend('longitude', ValidateLongitude::class . '@validate');
+        $this->validator()->extend('latitude', ValidateLatitude::class . '@validate');
     }
 
     /**
@@ -23,6 +28,14 @@ class HarnessServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'harness');
+        $this->mergeConfigFrom(__DIR__ . '/../config/harness.php', 'harness');
+    }
+
+    /**
+     * @return \Illuminate\Validation\Factory
+     */
+    protected function validator(): Factory
+    {
+        return $this->app['validator'];
     }
 }
