@@ -212,6 +212,7 @@ Harness is still young and while it is tested, there will probs be bugs. I will 
 ## Credits
 
 - [All Contributors](../../contributors)
+- [BTT](https://boris.travelled.today), aka **Boris Travelled Today**, where Harness was extracted from
 - [Ivan Boyko](https://www.iconfinder.com/visualpharm) [[cc]](https://creativecommons.org/licenses/by/3.0/) for the harness icon
 
 ## License
