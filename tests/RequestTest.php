@@ -3,6 +3,7 @@
 namespace ShabuShabu\Harness\Tests;
 
 use Orchestra\Testbench\TestCase;
+use ShabuShabu\Harness\HarnessServiceProvider;
 use ShabuShabu\Harness\Tests\Support\Page;
 use ShabuShabu\Harness\Tests\Support\RequestTrait;
 
@@ -14,10 +15,12 @@ class RequestTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['config']->set(
-            'harness.model_namespace',
-            'ShabuShabu\\Harness\\Tests\\Support'
-        );
+        $this->app['config']->set('harness.model_namespace', __NAMESPACE__ . '\\Support');
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [HarnessServiceProvider::class];
     }
 
     /**
@@ -74,18 +77,29 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @test
+     * @return array
      */
-    public function ensure_that_the_rules_get_transformed_properly(): void
+    public function ruleProvider(): array
     {
+        return [
+            'uuids are used'       => [true],
+            'integer ids are used' => [false],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider ruleProvider
+     * @param bool $useUuids
+     */
+    public function ensure_that_the_rules_get_transformed_properly(bool $useUuids): void
+    {
+        $this->app['config']->set('harness.use_uuids', $useUuids);
+
         $actual = $this->request()->setContainer($this->app)->rules();
 
         // @see \ShabuShabu\Harness\Tests\Support\PageRequest
         $expected = [
-            'data.id'                      => [
-                'required',
-                'integer',
-            ],
             'data.type'                    => [
                 'required',
                 'in:pages',
@@ -104,14 +118,24 @@ class RequestTest extends TestCase
             ],
         ];
 
+        if ($useUuids) {
+            $expected['data.id'] = ['required', 'uuid'];
+        } else {
+            $expected['data.id'] = ['required', 'integer'];
+        }
+
         $this->assertEquals($expected, $actual);
     }
 
     /**
      * @test
+     * @dataProvider ruleProvider
+     * @param bool $useUuids
      */
-    public function ensure_that_the_messages_get_transformed_properly(): void
+    public function ensure_that_the_messages_get_transformed_properly(bool $useUuids): void
     {
+        $this->app['config']->set('harness.use_uuids', $useUuids);
+
         $actual = $this->request()->setContainer($this->app)->messages();
 
         // @see \ShabuShabu\Harness\Tests\Support\PageRequest
@@ -124,8 +148,13 @@ class RequestTest extends TestCase
             'data.id.required'                         => 'An ID is required',
             'data.type.required'                       => 'The type is required',
             'data.type.in'                             => 'The type must be pages',
-            'data.id.integer'                          => 'The ID must be a valid integer',
         ];
+
+        if ($useUuids) {
+            $expected['data.id.uuid'] = 'The ID must be a valid UUID';
+        } else {
+            $expected['data.id.integer'] = 'The ID must be a valid integer';
+        }
 
         $this->assertEquals($expected, $actual);
     }

@@ -4,11 +4,12 @@ namespace ShabuShabu\Harness\Tests;
 
 use InvalidArgumentException;
 use Orchestra\Testbench\TestCase;
+use ShabuShabu\Harness\HarnessServiceProvider;
 use ShabuShabu\Harness\Items;
 use ShabuShabu\Harness\Request;
 use ShabuShabu\Harness\Tests\Support\RequestTrait;
-use function ShabuShabu\Harness\{json_type, to_snake_case};
 use Symfony\Component\HttpFoundation\Request as BaseRequest;
+use function ShabuShabu\Harness\{json_type, to_snake_case};
 
 class HelpersTest extends TestCase
 {
@@ -18,10 +19,12 @@ class HelpersTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['config']->set(
-            'harness.model_namespace',
-            'ShabuShabu\\Harness\\Tests\\Support'
-        );
+        $this->app['config']->set('harness.model_namespace', __NAMESPACE__ . '\\Support');
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [HarnessServiceProvider::class];
     }
 
     /**

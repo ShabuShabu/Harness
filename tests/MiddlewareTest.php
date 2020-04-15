@@ -4,6 +4,7 @@ namespace ShabuShabu\Harness\Tests;
 
 use Illuminate\Http\Resources\MissingValue;
 use Orchestra\Testbench\TestCase;
+use ShabuShabu\Harness\HarnessServiceProvider;
 use ShabuShabu\Harness\Items;
 use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     AddGlobalRules,
@@ -12,8 +13,8 @@ use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     RemoveMissingValues,
     TransformRulesets
 };
-use function ShabuShabu\Harness\r;
 use ShabuShabu\Harness\Tests\Support\RequestTrait;
+use function ShabuShabu\Harness\r;
 
 class MiddlewareTest extends TestCase
 {
@@ -23,10 +24,12 @@ class MiddlewareTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['config']->set(
-            'harness.model_namespace',
-            'ShabuShabu\\Harness\\Tests\\Support'
-        );
+        $this->app['config']->set('harness.model_namespace', __NAMESPACE__ . '\\Support');
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [HarnessServiceProvider::class];
     }
 
     /**
@@ -56,7 +59,7 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($messages, fn ($v) => $v)->all();
+        $actual = $middleware->handle($messages, fn($v) => $v)->all();
 
         $expected = [
             'id.required'      => 'An ID is required',
@@ -90,7 +93,7 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'attributes.title' => 'required',
@@ -119,7 +122,7 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'data.attributes.title' => 'required',
@@ -140,7 +143,7 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'attributes.title' => 'required',
@@ -160,7 +163,7 @@ class MiddlewareTest extends TestCase
             'attributes.content' => ['string'],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'attributes.title'   => ['nullable'],
@@ -184,7 +187,7 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'attributes.seo' => [
@@ -207,7 +210,7 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'attributes.title' => [
