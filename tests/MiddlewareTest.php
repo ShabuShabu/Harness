@@ -13,8 +13,8 @@ use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     RemoveMissingValues,
     TransformRulesets
 };
-use ShabuShabu\Harness\Tests\Support\RequestTrait;
 use function ShabuShabu\Harness\r;
+use ShabuShabu\Harness\Tests\Support\RequestTrait;
 
 class MiddlewareTest extends TestCase
 {

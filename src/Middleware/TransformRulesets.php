@@ -17,7 +17,7 @@ class TransformRulesets
     public function handle(Items $items, Closure $next)
     {
         return $next($items->set(
-            array_map(fn (Ruleset $rule) => $rule->all(), $items->all())
+            array_map(fn(Ruleset $rule) => $rule->all(), $items->all())
         ));
     }
 }

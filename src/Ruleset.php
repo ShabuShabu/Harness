@@ -186,7 +186,7 @@ class Ruleset
      */
     public function removeRule(string $name): self
     {
-        $this->items = array_filter($this->items, fn ($item) => $item !== $name);
+        $this->items = array_filter($this->items, fn($item) => $item !== $name);
 
         return $this;
     }

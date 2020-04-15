@@ -18,7 +18,7 @@ class PrefixWithData
     {
         $data   = $items->all();
         $values = array_combine(
-            array_map(fn ($k) => 'data.' . $k, array_keys($data)),
+            array_map(fn($k) => 'data.' . $k, array_keys($data)),
             $data
         );
 

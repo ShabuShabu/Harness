@@ -116,7 +116,7 @@ abstract class Request extends FormRequest
         return (new Pipeline($this->container))
             ->send(new Items($this, $items))
             ->through($pipes)
-            ->then(fn (Items $items) => $items->all());
+            ->then(fn(Items $items) => $items->all());
     }
 
     /**
