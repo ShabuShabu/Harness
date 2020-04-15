@@ -8,7 +8,14 @@
     <a href="https://github.com/ShabuShabu/Harness/actions?query=workflow%3A%22Run+PHPUnit+tests%22">
         <img alt="PHPUnit Tests" src="https://github.com/ShabuShabu/Harness/workflows/Run%20PHPUnit%20tests/badge.svg"/>
     </a>
+    <a href="https://github.com/ShabuShabu/Harness/blob/develop/LICENSE.md">
+        <img alt="GitHub license" src="https://img.shields.io/github/license/ShabuShabu/Harness">
+    </a>
+    <a href="https://github.com/ShabuShabu/Harness/tags">
+        <img alt="GitHub license" src="https://img.shields.io/github/v/tag/ShabuShabu/Harness.svg?sort=semver">
+    </a>
 </p>
+
 
 Opinionated validation abstraction for a [Laravel](https://laravel.com/) [JSON:API](https://jsonapi.org/) that hopefully doesn't get in the way
 
