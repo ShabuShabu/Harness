@@ -79,22 +79,26 @@ class RequestTest extends TestCase
     /**
      * @return array
      */
-    public function ruleProvider(): array
+    public function rulesProvider(): array
     {
         return [
-            'uuids are used'       => [true],
-            'integer ids are used' => [false],
+            'uuids are used, ids are required'           => [true, true],
+            'integer ids are used, ids are required'     => [false, true],
+            'uuids are used, ids are not required'       => [true, false],
+            'integer ids are used, ids are not required' => [false, false],
         ];
     }
 
     /**
      * @test
-     * @dataProvider ruleProvider
+     * @dataProvider rulesProvider
      * @param bool $useUuids
+     * @param bool $requireIds
      */
-    public function ensure_that_the_rules_get_transformed_properly(bool $useUuids): void
+    public function ensure_that_the_rules_get_transformed_properly(bool $useUuids, bool $requireIds): void
     {
         $this->app['config']->set('harness.use_uuids', $useUuids);
+        $this->app['config']->set('harness.require_ids', $requireIds);
 
         $actual = $this->request()->setContainer($this->app)->rules();
 
@@ -119,17 +123,32 @@ class RequestTest extends TestCase
         ];
 
         if ($useUuids) {
-            $expected['data.id'] = ['required', 'uuid'];
+            $expected['data.id'] = ['uuid'];
         } else {
-            $expected['data.id'] = ['required', 'integer'];
+            $expected['data.id'] = ['numeric'];
+        }
+
+        if ($useUuids && $requireIds) {
+            $expected['data.id'][] = 'required';
         }
 
         $this->assertEquals($expected, $actual);
     }
 
     /**
+     * @return array
+     */
+    public function messagesProvider(): array
+    {
+        return [
+            'uuids are used'       => [true],
+            'integer ids are used' => [false],
+        ];
+    }
+
+    /**
      * @test
-     * @dataProvider ruleProvider
+     * @dataProvider messagesProvider
      * @param bool $useUuids
      */
     public function ensure_that_the_messages_get_transformed_properly(bool $useUuids): void

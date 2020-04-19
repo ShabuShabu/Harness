@@ -13,8 +13,8 @@ use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     RemoveMissingValues,
     TransformRulesets
 };
-use function ShabuShabu\Harness\r;
 use ShabuShabu\Harness\Tests\Support\RequestTrait;
+use function ShabuShabu\Harness\r;
 
 class MiddlewareTest extends TestCase
 {
@@ -35,7 +35,7 @@ class MiddlewareTest extends TestCase
     /**
      * @return array
      */
-    public function globalProvider(): array
+    public function messageProvider(): array
     {
         return [
             'uuids are used'       => [true],
@@ -45,7 +45,7 @@ class MiddlewareTest extends TestCase
 
     /**
      * @test
-     * @dataProvider globalProvider
+     * @dataProvider messageProvider
      * @param bool $useUuids
      */
     public function ensure_that_global_messages_get_merged(bool $useUuids): void
@@ -78,13 +78,28 @@ class MiddlewareTest extends TestCase
     }
 
     /**
-     * @test
-     * @dataProvider  globalProvider
-     * @param bool $useUuids
+     * @return array
      */
-    public function ensure_that_global_rules_get_merged(bool $useUuids): void
+    public function rulesProvider(): array
+    {
+        return [
+            'uuids are used, ids are required'           => [true, true],
+            'integer ids are used, ids are required'     => [false, true],
+            'uuids are used, ids are not required'       => [true, false],
+            'integer ids are used, ids are not required' => [false, false],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider rulesProvider
+     * @param bool $useUuids
+     * @param bool $requireIds
+     */
+    public function ensure_that_global_rules_get_merged(bool $useUuids, bool $requireIds): void
     {
         $this->app['config']->set('harness.use_uuids', $useUuids);
+        $this->app['config']->set('harness.require_ids', $requireIds);
 
         $middleware = new AddGlobalRules();
         $rules      = new Items($this->request(), [
@@ -96,15 +111,15 @@ class MiddlewareTest extends TestCase
         $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
-            'attributes.title' => 'required',
-            'id'               => ['required'],
+            'id'               => [],
             'type'             => ['required', 'in:pages'],
+            'attributes.title' => 'required',
         ];
 
-        if ($useUuids) {
-            $expected['id'][] = 'uuid';
-        } else {
-            $expected['id'][] = 'integer';
+        $expected['id'][] = $useUuids ? 'uuid' : 'numeric';
+
+        if ($useUuids && $requireIds) {
+            $expected['id'][] = 'required';
         }
 
         $this->assertEquals($expected, $actual);
