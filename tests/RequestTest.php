@@ -69,14 +69,6 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @test
-     */
-    public function ensure_that_the_related_model_can_be_instantiated(): void
-    {
-        $this->assertInstanceOf(Page::class, $this->request()->modelClass());
-    }
-
-    /**
      * @return array
      */
     public function rulesProvider(): array

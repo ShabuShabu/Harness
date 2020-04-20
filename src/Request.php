@@ -2,7 +2,6 @@
 
 namespace ShabuShabu\Harness;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Pipeline\Pipeline;
 use InvalidArgumentException;
@@ -16,16 +15,6 @@ use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
 
 abstract class Request extends FormRequest
 {
-    /**
-     * @return Model
-     */
-    public function modelClass(): Model
-    {
-        $model = $this->guessModel();
-
-        return new $model();
-    }
-
     /**
      * @return string
      */
@@ -59,7 +48,7 @@ abstract class Request extends FormRequest
      */
     protected function routeModel()
     {
-        $model      = $this->modelClass();
+        $model      = $this->guessModel();
         $routeParam = $model . '::ROUTE_PARAM';
 
         if (! defined($routeParam)) {
