@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="" src="https://github.com/boris-glumpler/Harness/blob/develop/harness.png"/>
+    <img alt="" src="https://github.com/ShabuShabu/Harness/blob/develop/harness.png"/>
 </p>
 
 <h1 align="center">Harness</h1>
