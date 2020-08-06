@@ -18,15 +18,11 @@ class AddGlobalRules
     public function handle(Items $rules, Closure $next)
     {
         $globalRules = [
-            'id'   => [],
+            'id'   => ['uuid'],
             'type' => ['required', 'in:' . json_type($rules)],
         ];
 
-        $useUuids = config('harness.use_uuids');
-
-        $globalRules['id'][] = $useUuids ? 'uuid' : 'numeric';
-
-        if ($useUuids && config('harness.require_ids')) {
+        if (config('harness.require_ids')) {
             $globalRules['id'][] = 'required';
         }
 

@@ -17,18 +17,11 @@ class AddGlobalMessages
      */
     public function handle(Items $messages, Closure $next)
     {
-        $feedback = [
+        return $next($messages->merge([
+            'id.uuid'       => 'The ID must be a valid UUID',
             'id.required'   => 'An ID is required',
             'type.required' => 'The type is required',
             'type.in'       => 'The type must be ' . json_type($messages),
-        ];
-
-        if (config('harness.use_uuids')) {
-            $feedback['id.uuid'] = 'The ID must be a valid UUID';
-        } else {
-            $feedback['id.integer'] = 'The ID must be a valid integer';
-        }
-
-        return $next($messages->merge($feedback));
+        ]));
     }
 }

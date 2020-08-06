@@ -42,11 +42,9 @@ function json_type(Items $items): string
 {
     $model = $items->request()->guessModel();
 
-    $jsonType = $model . '::JSON_TYPE';
-
-    if (! defined($jsonType)) {
+    if (! method_exists($model, 'jsonType')) {
         throw new InvalidArgumentException("The JSON_TYPE constant was not set on [$model]");
     }
 
-    return constant($jsonType);
+    return $model::jsonType();
 }

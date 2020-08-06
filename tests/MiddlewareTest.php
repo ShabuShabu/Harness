@@ -13,8 +13,8 @@ use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     RemoveMissingValues,
     TransformRulesets
 };
-use function ShabuShabu\Harness\r;
 use ShabuShabu\Harness\Tests\Support\RequestTrait;
+use function ShabuShabu\Harness\r;
 
 class MiddlewareTest extends TestCase
 {
@@ -33,25 +33,10 @@ class MiddlewareTest extends TestCase
     }
 
     /**
-     * @return array
-     */
-    public function messageProvider(): array
-    {
-        return [
-            'uuids are used'       => [true],
-            'integer ids are used' => [false],
-        ];
-    }
-
-    /**
      * @test
-     * @dataProvider messageProvider
-     * @param bool $useUuids
      */
-    public function ensure_that_global_messages_get_merged(bool $useUuids): void
+    public function ensure_that_global_messages_get_merged(): void
     {
-        $this->app['config']->set('harness.use_uuids', $useUuids);
-
         $middleware = new AddGlobalMessages();
         $messages   = new Items($this->request(), [
             'attributes' => [
@@ -62,17 +47,12 @@ class MiddlewareTest extends TestCase
         $actual = $middleware->handle($messages, fn($v) => $v)->all();
 
         $expected = [
+            'id.uuid'          => 'The ID must be a valid UUID',
             'id.required'      => 'An ID is required',
             'type.required'    => 'The type is required',
             'type.in'          => 'The type must be pages',
             'attributes.title' => 'Awesome!',
         ];
-
-        if ($useUuids) {
-            $expected['id.uuid'] = 'The ID must be a valid UUID';
-        } else {
-            $expected['id.integer'] = 'The ID must be a valid integer';
-        }
 
         $this->assertEquals($expected, $actual);
     }
@@ -83,22 +63,18 @@ class MiddlewareTest extends TestCase
     public function rulesProvider(): array
     {
         return [
-            'uuids are used, ids are required'           => [true, true],
-            'integer ids are used, ids are required'     => [false, true],
-            'uuids are used, ids are not required'       => [true, false],
-            'integer ids are used, ids are not required' => [false, false],
+            'ids are required'     => [true],
+            'ids are not required' => [false],
         ];
     }
 
     /**
      * @test
      * @dataProvider rulesProvider
-     * @param bool $useUuids
      * @param bool $requireIds
      */
-    public function ensure_that_global_rules_get_merged(bool $useUuids, bool $requireIds): void
+    public function ensure_that_global_rules_get_merged($requireIds): void
     {
-        $this->app['config']->set('harness.use_uuids', $useUuids);
         $this->app['config']->set('harness.require_ids', $requireIds);
 
         $middleware = new AddGlobalRules();
@@ -111,14 +87,12 @@ class MiddlewareTest extends TestCase
         $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
-            'id'               => [],
+            'id'               => ['uuid'],
             'type'             => ['required', 'in:pages'],
             'attributes.title' => 'required',
         ];
 
-        $expected['id'][] = $useUuids ? 'uuid' : 'numeric';
-
-        if ($useUuids && $requireIds) {
+        if ($requireIds) {
             $expected['id'][] = 'required';
         }
 

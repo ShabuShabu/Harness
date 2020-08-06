@@ -48,14 +48,13 @@ abstract class Request extends FormRequest
      */
     protected function routeModel()
     {
-        $model      = $this->guessModel();
-        $routeParam = $model . '::ROUTE_PARAM';
+        $model = $this->guessModel();
 
-        if (! defined($routeParam)) {
+        if (! method_exists($model, 'routeParam')) {
             throw new InvalidArgumentException("The ROUTE_PARAM constant was not set on [$model]");
         }
 
-        return $this->route(constant($routeParam));
+        return $this->route($model::routeParam());
     }
 
     /**
@@ -66,7 +65,10 @@ abstract class Request extends FormRequest
     /**
      * @return array
      */
-    abstract public function feedback(): array;
+    public function feedback(): array
+    {
+        return [];
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -89,7 +91,11 @@ abstract class Request extends FormRequest
      */
     public function messages(): array
     {
-        return $this->pipeline($this->feedback(), [
+        if (count($feedback = $this->feedback()) <= 0) {
+            return [];
+        }
+
+        return $this->pipeline($feedback, [
             AddGlobalMessages::class,
             PrefixWithData::class,
         ]);

@@ -3,24 +3,10 @@
 return [
     /*
      |--------------------------------------------------------------------------
-     | UUIDs
-     |--------------------------------------------------------------------------
-     |
-     | By default Harness assumes that all your models use UUIDs as primary
-     | keys. Firstly, because they're awesome, and secondly, because they
-     | work really well with JSON:API
-     |
-     */
-
-    'use_uuids' => true,
-
-    /*
-     |--------------------------------------------------------------------------
      | Require Ids
      |--------------------------------------------------------------------------
      |
-     | Setting this option to true will make all ids required. Useful only if
-     | use_uuids is set to true.
+     | Setting this option to true will make all ids required.
      |
      */
 
