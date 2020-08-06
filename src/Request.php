@@ -7,6 +7,7 @@ use Illuminate\Pipeline\Pipeline;
 use InvalidArgumentException;
 use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     AddGlobalRules,
+    HandleConfirmationRules,
     PrefixWithData,
     PrepareForPatching,
     RemoveMissingValues,
@@ -79,6 +80,7 @@ abstract class Request extends FormRequest
     {
         return $this->pipeline($this->ruleset(), [
             TransformRulesets::class,
+            HandleConfirmationRules::class,
             RemoveMissingValues::class,
             PrepareForPatching::class,
             AddGlobalRules::class,
@@ -112,14 +114,6 @@ abstract class Request extends FormRequest
             ->send(new Items($this, $items))
             ->through($pipes)
             ->then(fn(Items $items) => $items->all());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validationData(): array
-    {
-        return to_snake_case(parent::validationData());
     }
 
     /**

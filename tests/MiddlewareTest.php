@@ -8,6 +8,7 @@ use ShabuShabu\Harness\HarnessServiceProvider;
 use ShabuShabu\Harness\Items;
 use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     AddGlobalRules,
+    HandleConfirmationRules,
     PrefixWithData,
     PrepareForPatching,
     RemoveMissingValues,
@@ -206,6 +207,31 @@ class MiddlewareTest extends TestCase
                 'required',
                 'string',
             ],
+        ];
+
+        $this->assertEquals($expected, $actual);
+    }
+
+
+    /**
+     * @test
+     * @group new
+     */
+    public function ensure_that_confirmation_rules_get_transformed(): void
+    {
+        $middleware = new HandleConfirmationRules();
+        $messages   = new Items($this->request(), [
+            'attributes' => [
+                'password'             => 'Awesome',
+                'passwordConfirmation' => 'Awesome',
+            ],
+        ]);
+
+        $actual = $middleware->handle($messages, fn($v) => $v)->all();
+
+        $expected = [
+            'attributes.password'              => 'Awesome',
+            'attributes.password_confirmation' => 'Awesome',
         ];
 
         $this->assertEquals($expected, $actual);

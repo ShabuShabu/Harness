@@ -42,27 +42,6 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function ensure_that_the_validation_data_gets_snake_cased(): void
-    {
-        $actual = $this->request('POST')->validationData();
-
-        // @see \ShabuShabu\Harness\Tests\Support\PageRequest
-        $expected = [
-            'data' => [
-                'attributes' => [
-                    'title'        => 'Pretty!',
-                    'content'      => 'blabla',
-                    'published_at' => '2020-03-05 20:34:45',
-                ],
-            ],
-        ];
-
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @test
-     */
     public function ensure_that_the_related_model_can_be_guessed(): void
     {
         $this->assertSame(Page::class, $this->request()->guessModel());
