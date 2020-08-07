@@ -4,6 +4,8 @@ namespace ShabuShabu\Harness;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     AddGlobalRules,
@@ -69,6 +71,27 @@ abstract class Request extends FormRequest
     public function feedback(): array
     {
         return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function validationData(): array
+    {
+        $data = parent::validationData();
+
+        $transform = fn ($k) => Str::endsWith($k, 'Confirmation') ? Str::snake($k) : $k;
+
+        $attr = Arr::get($data, 'data.attributes');
+
+        $attributes = array_combine(
+            array_map(fn($k) => $transform($k), array_keys($attr)),
+            $attr
+        );
+
+        Arr::set($data, 'data.attributes', $attributes);
+
+        return $data;
     }
 
     /**

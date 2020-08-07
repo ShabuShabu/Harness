@@ -9,7 +9,7 @@ use ShabuShabu\Harness\Items;
 class HandleConfirmationRules
 {
     /**
-     * Handle an incoming request.
+     * Handle an incoming request.s
      *
      * @param Items    $items
      * @param \Closure $next
