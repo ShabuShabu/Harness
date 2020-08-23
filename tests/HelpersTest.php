@@ -4,6 +4,7 @@ namespace ShabuShabu\Harness\Tests;
 
 use InvalidArgumentException;
 use Orchestra\Testbench\TestCase;
+use ShabuShabu\Harness\HarnessServiceProvider;
 use ShabuShabu\Harness\Items;
 use ShabuShabu\Harness\Request;
 use ShabuShabu\Harness\Tests\Support\RequestTrait;
@@ -18,10 +19,12 @@ class HelpersTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['config']->set(
-            'harness.model_namespace',
-            'ShabuShabu\\Harness\\Tests\\Support'
-        );
+        $this->app['config']->set('harness.model_namespace', __NAMESPACE__ . '\\Support');
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [HarnessServiceProvider::class];
     }
 
     /**

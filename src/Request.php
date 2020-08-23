@@ -2,12 +2,14 @@
 
 namespace ShabuShabu\Harness;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     AddGlobalRules,
+    HandleConfirmationRules,
     PrefixWithData,
     PrepareForPatching,
     RemoveMissingValues,
@@ -16,16 +18,6 @@ use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
 
 abstract class Request extends FormRequest
 {
-    /**
-     * @return Model
-     */
-    public function modelClass(): Model
-    {
-        $model = $this->guessModel();
-
-        return new $model();
-    }
-
     /**
      * @return string
      */
@@ -59,14 +51,13 @@ abstract class Request extends FormRequest
      */
     protected function routeModel()
     {
-        $model      = $this->modelClass();
-        $routeParam = $model . '::ROUTE_PARAM';
+        $model = $this->guessModel();
 
-        if (! defined($routeParam)) {
+        if (! method_exists($model, 'routeParam')) {
             throw new InvalidArgumentException("The ROUTE_PARAM constant was not set on [$model]");
         }
 
-        return $this->route(constant($routeParam));
+        return $this->route($model::routeParam());
     }
 
     /**
@@ -77,7 +68,33 @@ abstract class Request extends FormRequest
     /**
      * @return array
      */
-    abstract public function feedback(): array;
+    public function feedback(): array
+    {
+        return [];
+    }
+
+    /**
+     * For now this is fine, but if we need to do more work here, then
+     * we should consider a pipeline analogue to the rules and messages
+     * {@inheritDoc}
+     */
+    public function validationData(): array
+    {
+        $data = parent::validationData();
+
+        $transform = fn($k) => Str::endsWith($k, 'Confirmation') ? Str::snake($k) : $k;
+
+        $attr = Arr::get($data, 'data.attributes', []);
+
+        $attributes = array_combine(
+            array_map(fn($k) => $transform($k), array_keys($attr)),
+            $attr
+        );
+
+        Arr::set($data, 'data.attributes', $attributes);
+
+        return $data;
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -88,6 +105,7 @@ abstract class Request extends FormRequest
     {
         return $this->pipeline($this->ruleset(), [
             TransformRulesets::class,
+            HandleConfirmationRules::class,
             RemoveMissingValues::class,
             PrepareForPatching::class,
             AddGlobalRules::class,
@@ -100,7 +118,11 @@ abstract class Request extends FormRequest
      */
     public function messages(): array
     {
-        return $this->pipeline($this->feedback(), [
+        if (count($feedback = $this->feedback()) <= 0) {
+            return [];
+        }
+
+        return $this->pipeline($feedback, [
             AddGlobalMessages::class,
             PrefixWithData::class,
         ]);
@@ -116,15 +138,7 @@ abstract class Request extends FormRequest
         return (new Pipeline($this->container))
             ->send(new Items($this, $items))
             ->through($pipes)
-            ->then(fn (Items $items) => $items->all());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validationData(): array
-    {
-        return to_snake_case(parent::validationData());
+            ->then(fn(Items $items) => $items->all());
     }
 
     /**

@@ -4,9 +4,11 @@ namespace ShabuShabu\Harness\Tests;
 
 use Illuminate\Http\Resources\MissingValue;
 use Orchestra\Testbench\TestCase;
+use ShabuShabu\Harness\HarnessServiceProvider;
 use ShabuShabu\Harness\Items;
 use ShabuShabu\Harness\Middleware\{AddGlobalMessages,
     AddGlobalRules,
+    HandleConfirmationRules,
     PrefixWithData,
     PrepareForPatching,
     RemoveMissingValues,
@@ -23,32 +25,19 @@ class MiddlewareTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['config']->set(
-            'harness.model_namespace',
-            'ShabuShabu\\Harness\\Tests\\Support'
-        );
+        $this->app['config']->set('harness.model_namespace', __NAMESPACE__ . '\\Support');
     }
 
-    /**
-     * @return array
-     */
-    public function globalProvider(): array
+    protected function getPackageProviders($app): array
     {
-        return [
-            'uuids are used'       => [true],
-            'integer ids are used' => [false],
-        ];
+        return [HarnessServiceProvider::class];
     }
 
     /**
      * @test
-     * @dataProvider globalProvider
-     * @param bool $useUuids
      */
-    public function ensure_that_global_messages_get_merged(bool $useUuids): void
+    public function ensure_that_global_messages_get_merged(): void
     {
-        $this->app['config']->set('harness.use_uuids', $useUuids);
-
         $middleware = new AddGlobalMessages();
         $messages   = new Items($this->request(), [
             'attributes' => [
@@ -56,32 +45,38 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($messages, fn ($v) => $v)->all();
+        $actual = $middleware->handle($messages, fn($v) => $v)->all();
 
         $expected = [
+            'id.uuid'          => 'The ID must be a valid UUID',
             'id.required'      => 'An ID is required',
             'type.required'    => 'The type is required',
             'type.in'          => 'The type must be pages',
             'attributes.title' => 'Awesome!',
         ];
 
-        if ($useUuids) {
-            $expected['id.uuid'] = 'The ID must be a valid UUID';
-        } else {
-            $expected['id.integer'] = 'The ID must be a valid integer';
-        }
-
         $this->assertEquals($expected, $actual);
     }
 
     /**
-     * @test
-     * @dataProvider  globalProvider
-     * @param bool $useUuids
+     * @return array
      */
-    public function ensure_that_global_rules_get_merged(bool $useUuids): void
+    public function rulesProvider(): array
     {
-        $this->app['config']->set('harness.use_uuids', $useUuids);
+        return [
+            'ids are required'     => [true],
+            'ids are not required' => [false],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider rulesProvider
+     * @param bool $requireIds
+     */
+    public function ensure_that_global_rules_get_merged($requireIds): void
+    {
+        $this->app['config']->set('harness.require_ids', $requireIds);
 
         $middleware = new AddGlobalRules();
         $rules      = new Items($this->request(), [
@@ -90,18 +85,16 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
-            'attributes.title' => 'required',
-            'id'               => ['required'],
+            'id'               => ['uuid'],
             'type'             => ['required', 'in:pages'],
+            'attributes.title' => 'required',
         ];
 
-        if ($useUuids) {
-            $expected['id'][] = 'uuid';
-        } else {
-            $expected['id'][] = 'integer';
+        if ($requireIds) {
+            $expected['id'][] = 'required';
         }
 
         $this->assertEquals($expected, $actual);
@@ -119,7 +112,7 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'data.attributes.title' => 'required',
@@ -140,7 +133,7 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'attributes.title' => 'required',
@@ -160,7 +153,7 @@ class MiddlewareTest extends TestCase
             'attributes.content' => ['string'],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'attributes.title'   => ['nullable'],
@@ -184,7 +177,7 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'attributes.seo' => [
@@ -207,13 +200,38 @@ class MiddlewareTest extends TestCase
             ],
         ]);
 
-        $actual = $middleware->handle($rules, fn ($v) => $v)->all();
+        $actual = $middleware->handle($rules, fn($v) => $v)->all();
 
         $expected = [
             'attributes.title' => [
                 'required',
                 'string',
             ],
+        ];
+
+        $this->assertEquals($expected, $actual);
+    }
+
+
+    /**
+     * @test
+     * @group new
+     */
+    public function ensure_that_confirmation_rules_get_transformed(): void
+    {
+        $middleware = new HandleConfirmationRules();
+        $messages   = new Items($this->request(), [
+            'attributes' => [
+                'password'             => 'Awesome',
+                'passwordConfirmation' => 'Awesome',
+            ],
+        ]);
+
+        $actual = $middleware->handle($messages, fn($v) => $v)->all();
+
+        $expected = [
+            'attributes.password'              => 'Awesome',
+            'attributes.password_confirmation' => 'Awesome',
         ];
 
         $this->assertEquals($expected, $actual);

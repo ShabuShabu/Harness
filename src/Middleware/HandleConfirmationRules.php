@@ -3,12 +3,13 @@
 namespace ShabuShabu\Harness\Middleware;
 
 use Closure;
+use Illuminate\Support\Str;
 use ShabuShabu\Harness\Items;
 
-class PrefixWithData
+class HandleConfirmationRules
 {
     /**
-     * Handle an incoming request.
+     * Handle an incoming request.s
      *
      * @param Items    $items
      * @param \Closure $next
@@ -18,10 +19,19 @@ class PrefixWithData
     {
         $data   = $items->all();
         $values = array_combine(
-            array_map(fn($k) => 'data.' . $k, array_keys($data)),
+            array_map(fn($k) => $this->transformConfirmation($k), array_keys($data)),
             $data
         );
 
         return $next($items->set($values));
+    }
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    protected function transformConfirmation(string $key): string
+    {
+        return Str::endsWith($key, 'Confirmation') ? Str::snake($key) : $key;
     }
 }
