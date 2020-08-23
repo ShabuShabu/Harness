@@ -32,10 +32,6 @@ class HandleConfirmationRules
      */
     protected function transformConfirmation(string $key): string
     {
-        if (! Str::endsWith($key, 'Confirmation')) {
-            return $key;
-        }
-
-        return Str::snake($key);
+        return Str::endsWith($key, 'Confirmation') ? Str::snake($key) : $key;
     }
 }

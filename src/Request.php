@@ -74,15 +74,17 @@ abstract class Request extends FormRequest
     }
 
     /**
+     * For now this is fine, but if we need to do more work here, then
+     * we should consider a pipeline analogue to the rules and messages
      * {@inheritDoc}
      */
     public function validationData(): array
     {
         $data = parent::validationData();
 
-        $transform = fn ($k) => Str::endsWith($k, 'Confirmation') ? Str::snake($k) : $k;
+        $transform = fn($k) => Str::endsWith($k, 'Confirmation') ? Str::snake($k) : $k;
 
-        $attr = Arr::get($data, 'data.attributes');
+        $attr = Arr::get($data, 'data.attributes', []);
 
         $attributes = array_combine(
             array_map(fn($k) => $transform($k), array_keys($attr)),
