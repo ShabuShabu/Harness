@@ -23,7 +23,6 @@ Opinionated validation abstraction for a [Laravel](https://laravel.com/) [JSON:A
 
 - Make default messages configurable
 - Do not require feedback method
-- Publish to Packagist
 - Live happily ever after
 
 ## Installation
