@@ -1,6 +1,6 @@
 {
     "name": "shabushabu/harness",
-    "description": "Opinionated validation abstraction for A Laravel JSON:API that hopefully doesn't get in the way",
+    "description": "Opinionated validation abstraction for a Laravel JSON:API that hopefully doesn't get in the way",
     "keywords": [
         "shabushabu",
         "Harness"
